@@ -115,55 +115,63 @@
     <div id="congrats" class="congrats">🎊 Congratulations! 🎊</div>
 
     <script>
-        function createConfetti() {
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
-                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 4000);
-            }
-        }
+function createConfetti() {
+  for (let i = 0; i < 150; i++) {
+    const confetti = document.createElement('div');
+    confetti.classList.add('confetti');
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.width = Math.random() * 8 + 4 + 'px';
+    confetti.style.height = confetti.style.width;
+    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 5000);
+  }
+}
 
-        function pickRandomName() {
-            const input = document.getElementById('nameInput').value;
-            const names = input.split('\n').map(name => name.trim()).filter(name => name);
-            const display = document.getElementById('display');
-            const congrats = document.getElementById('congrats');
+function playSound() {
+  const audio = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3");
+  audio.play();
+}
 
-            if (names.length === 0) {
-                display.textContent = "Please enter some names!";
-                display.className = "name-display";
-                return;
-            }
+function pickRandomName() {
+  const input = document.getElementById('nameInput').value;
+  const names = input.split('\n').map(name => name.trim()).filter(name => name);
+  const display = document.getElementById('display');
+  const congrats = document.getElementById('congrats');
 
-            congrats.classList.remove('show');
-            display.className = "name-display";
+  if (names.length === 0) {
+    display.textContent = "Please enter some names!";
+    display.className = "name-display";
+    return;
+  }
 
-            let count = 0;
-            const maxCount = 50;
-            const interval = 100;
-            let currentName = "";
+  congrats.classList.remove('show');
+  display.className = "name-display";
+  let count = 0;
+  const maxCount = 60;
+  const interval = 80;
+  let currentName = "";
 
-            const intervalId = setInterval(() => {
-                currentName = names[Math.floor(Math.random() * names.length)];
-                display.textContent = currentName;
-                display.classList.add("animate");
-                count++;
+  const intervalId = setInterval(() => {
+    currentName = names[Math.floor(Math.random() * names.length)];
+    display.textContent = currentName;
+    display.classList.toggle("animate");
+    count++;
+    if (count >= maxCount) {
+      clearInterval(intervalId);
+      setTimeout(() => {
+        display.className = "name-display final";
+        congrats.classList.add('show');
+        createConfetti();
+        playSound();
+      }, 100);
+    }
+  }, interval);
+}
+</script>
 
-                if (count >= maxCount) {
-                    clearInterval(intervalId);
-                    setTimeout(() => {
-                        display.className = "name-display final";
-                        congrats.classList.add('show');
-                        createConfetti();
-                    }, 100);
-                }
-            }, interval);
-        }
-    </script>
 </body>
 
 </html>
