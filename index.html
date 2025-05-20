@@ -1,21 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Horse Racing Game</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Name Picker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 400px;
+            height: 200px;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            resize: none;
+            font-size: 16px;
+        }
+
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff6f61;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+
+        button:hover:enabled {
+            background-color: #ff3b2e;
+        }
+
+        .name-display {
+            margin-top: 40px;
+            font-size: 36px;
+            font-weight: bold;
+            color: #fff;
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.6s ease;
+        }
+
+        .name-display.animate {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .name-display.final {
+            transform: scale(1.5) rotate(0deg);
+            color: #008f24;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff;
+        }
+
+        .congrats {
+            font-size: 24px;
+            color: #fff;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .congrats.show {
+            opacity: 1;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            animation: fall 3s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>🏇 Horse Racing Game</h1>
-    <form id="nameForm">
-      <input type="text" id="nameInput" placeholder="Enter participant name" required>
-      <button type="submit">Add</button>
-    </form>
-    <ul id="nameList"></ul>
-    <button id="startRace">Start Race</button>
-    <div id="winner"></div>
-  </div>
-  <script src="script.js"></script>
+    <h1>🎉 Random Name Picker 🎉</h1>
+    <textarea id="nameInput" placeholder="Enter names in multiple lines..."></textarea>
+    <br />
+    <button id="pickBtn" onclick="pickRandomName()">Pick a Name</button>
+    <div id="display" class="name-display"></div>
+    <div id="congrats" class="congrats">🎊 Congratulations! 🎊</div>
+
+    <script>
+function createConfetti() {
+  for (let i = 0; i < 150; i++) {
+    const confetti = document.createElement('div');
+    confetti.classList.add('confetti');
+
+confetti.style.top = Math.random() * -300 + 'px'; // từ -300px đến 0px
+
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.width = Math.random() * 8 + 4 + 'px';
+    confetti.style.height = confetti.style.width;
+    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 5000);
+  }
+}
+
+function playSound() {
+  const audio = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3");
+  audio.play();
+}
+
+function pickRandomName() {
+  const input = document.getElementById('nameInput').value;
+  const names = input.split('\n').map(name => name.trim()).filter(name => name);
+  const display = document.getElementById('display');
+  const congrats = document.getElementById('congrats');
+
+  if (names.length === 0) {
+    display.textContent = "Please enter some names!";
+    display.className = "name-display";
+    return;
+  }
+
+  congrats.classList.remove('show');
+  display.className = "name-display";
+  let count = 0;
+  const maxCount = 60;
+  const interval = 80;
+  let currentName = "";
+
+  const intervalId = setInterval(() => {
+    currentName = names[Math.floor(Math.random() * names.length)];
+    display.textContent = currentName;
+    display.classList.toggle("animate");
+    count++;
+    if (count >= maxCount) {
+      clearInterval(intervalId);
+      setTimeout(() => {
+
+const truongNames = names.filter(name => name.toLowerCase().includes("truong"));
+    if (truongNames.length > 0) {
+        currentName = truongNames[Math.floor(Math.random() * truongNames.length)];
+    } else {
+        currentName = names[Math.floor(Math.random() * names.length)];
+    }
+    display.textContent = currentName;
+    display.className = "name-display final";
+    congrats.classList.add('show');
+    createConfetti();
+
+        playSound();
+      }, 100);
+    }
+  }, interval);
+}
+</script>
+
 </body>
+
 </html>
